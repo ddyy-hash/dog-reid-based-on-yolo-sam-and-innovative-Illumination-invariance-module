@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}处理中{% endblock %}
+{% block content %}
+<div class="processing-container" data-video-id="{{ video.id }}">
+    <div class="processing-header">
+        <h1>视频分析中</h1>
+        <p class="processing-subtitle">AI正在分析您的视频，请耐心等待...</p>
+    </div>
+    
+    <!-- 视频预览区域 -->
+    <div class="video-section">
+        <div class="video-player">
+            <div id="videoContainer"></div>
+            <div id="errorContainer" class="video-error" style="display: none;">
+                <div class="error-icon">
+                    <i class="icon-warning"></i>
+                </div>
+                <div class="error-content">
+                    <h3>视频预览不可用</h3>
+                    <p>这不会影响AI识别过程，识别将继续进行</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度指示器 -->
+    <div class="progress-section">
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div class="progress-info">
+                <span class="progress-text" id="progressText">初始化中...</span>
+                <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+        </div>
+
+        <div class="processing-stages">
+            <div class="stage active" data-stage="upload">
+                <div class="stage-icon"><i class="icon-upload"></i></div>
+                <span>文件上传</span>
+            </div>
+            <div class="stage" data-stage="analyze">
+                <div class="stage-icon"><i class="icon-analyze"></i></div>
+                <span>视频分析</span>
+            </div>
+            <div class="stage" data-stage="recognize">
+                <div class="stage-icon"><i class="icon-ai"></i></div>
+                <span>AI识别</span>
+            </div>
+            <div class="stage" data-stage="complete">
+                <div class="stage-icon"><i class="icon-check"></i></div>
+                <span>完成</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 实时统计 -->
+    <div class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="framesProcessed">--</div>
+                <div class="stat-label">已处理帧数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="detectionCount">--</div>
+                <div class="stat-label">检测次数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="processingTime">--</div>
+                <div class="stat-label">处理时间</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 结果展示区域（初始隐藏） -->
+<div id="resultsSection" class="results-section" style="display: none;">
+    <div class="results-header">
+        <h2>识别结果</h2>
+        <div class="results-actions">
+            <button class="btn-primary" onclick="uploadAnother()">
+                <i class="icon-plus"></i> 上传新视频
+            </button>
+        </div>
+    </div>
+
+    <div class="results-content">
+        <div class="top-result-card" id="topResultCard">
+            <!-- 最高置信度结果展示 -->
+        </div>
+
+        <div class="all-results">
+            <h3>详细识别结果</h3>
+            <div class="result-list" id="resultList">
+                <!-- 所有结果列表 -->
+            </div>
+        </div>
+
+        <div class="analysis-summary">
+            <h3>分析总结</h3>
+            <div class="summary-content" id="summaryContent">
+                <!-- 分析总结内容 -->
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const videoIdElement = document.querySelector('[data-video-id]');
+        if (videoIdElement) {
+            const videoId = videoIdElement.getAttribute('data-video-id');
+            const monitor = new ProgressMonitor(videoId);
+            monitor.start();
+        }
+
+        // 上传新视频功能
+        window.uploadAnother = function() {
+            window.location.href = '/upload';
+        };
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}上传视频{% endblock %}
+{% block content %}
+<div class="upload-container">
+    <div class="upload-header">
+        <h1>视频上传与识别</h1>
+        <p class="upload-subtitle">上传您的狗狗视频，获得专业的AI识别结果</p>
+    </div>
+    
+    <form method="POST" enctype="multipart/form-data" class="upload-form">
+        {{ form.hidden_tag() }}
+        
+        <div class="file-upload-area" id="fileUploadArea">
+            <div class="upload-zone" id="uploadZone">
+                <div class="upload-icon">
+                    <i class="icon-cloud-upload"></i>
+                </div>
+                <div class="upload-text">
+                    <p class="upload-primary">点击上传或拖拽文件到此处</p>
+                    <p class="upload-secondary">支持格式：MP4, AVI, MOV, DAV (最大100MB)</p>
+                </div>
+                {{ form.video(class="file-input", id="fileInput") }}
+            </div>
+            
+            <div class="file-preview" id="filePreview" style="display: none;">
+                <div class="preview-info">
+                    <div class="file-icon">
+                        <i class="icon-video"></i>
+                    </div>
+                    <div class="file-details">
+                        <h4 class="file-name" id="fileName"></h4>
+                        <p class="file-size" id="fileSize"></p>
+                        <div class="file-actions">
+                            <button type="button" class="btn-text" onclick="removeFile()">移除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="upload-options">
+            <div class="option-group">
+                <label class="option-label">
+                    <input type="checkbox" id="notifyWhenComplete"> 
+                    处理完成后通知我
+                </label>
+            </div>
+        </div>
+        
+        <div class="upload-actions">
+            {{ form.submit(class="btn-primary btn-large", id="submitBtn", disabled=true) }}
+        </div>
+    </form>
+    
+    <!-- 上传提示信息 -->
+    <div class="upload-tips">
+        <h3>上传建议</h3>
+        <ul>
+            <li>视频清晰度建议720p以上，以获得更好的识别效果</li>
+            <li>确保狗狗在画面中占比较大，动作清晰可见</li>
+            <li>避免过度晃动或模糊的视频内容</li>
+            <li>单个视频文件不超过100MB</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    // 当文件输入发生变化时
+    let isUploading = false;
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+         if (isUploading) return;
+
+        const file = e.target.files[0];
+        const uploadZone = document.getElementById('uploadZone');
+        const filePreview = document.getElementById('filePreview');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (file) {
+            // 显示文件预览，隐藏上传区域
+            uploadZone.style.display = 'none';
+            filePreview.style.display = 'block';
+
+            // 更新文件名
+            fileName.textContent = file.name;
+
+            // 更新文件大小
+            const fileSizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+            fileSize.textContent = fileSizeInMB + ' MB';
+
+            // 启用提交按钮
+            submitBtn.disabled = false;
+            submitBtn.classList.add('btn-enabled');
+        } else {
+            // 如果没有选择文件，则显示上传区域，隐藏预览
+            uploadZone.style.display = 'block';
+            filePreview.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.classList.remove('btn-enabled');
+        }
+    });
+
+
+    // 表单提交防重复
+    document.querySelector('.upload-form').addEventListener('submit', function(e) {
+        if (isUploading) {
+            e.preventDefault();
+            return false;
+        }
+        isUploading = true;
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="icon-loading"></i> 上传中...';
+    });
+
+
+    // 拖放功能支持
+    const uploadZone = document.getElementById('uploadZone');
+
+    uploadZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+    });
+
+    uploadZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+
+        if (isUploading) return;
+
+        if (e.dataTransfer.files.length) {
+            const fileInput = document.getElementById('fileInput');
+            fileInput.files = e.dataTransfer.files;
+
+            // 触发change事件
+            const event = new Event('change', { bubbles: true });
+            fileInput.dispatchEvent(event);
+        }
+    });
+
+    function removeFile() {
+        const uploadZone = document.getElementById('uploadZone');
+        const filePreview = document.getElementById('filePreview');
+        const fileInput = document.getElementById('fileInput');
+        const submitBtn = document.getElementById('submitBtn');
+
+        uploadZone.style.display = 'block';
+        filePreview.style.display = 'none';
+        fileInput.value = '';
+        submitBtn.disabled = true;
+        submitBtn.classList.remove('btn-enabled');
+    }
+
+    // 点击上传区域触发文件选择
+    uploadZone.addEventListener('click', function() {
+        document.getElementById('fileInput').click();
+    });
+</script>
+
+{% endblock %}

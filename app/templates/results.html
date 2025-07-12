@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}识别结果{% endblock %}
+{% block content %}
+<div class="results">
+    <h1>识别结果 - {{ video.filename }}</h1>
+
+    {% if video.result_data %}
+        {% set results = video.result_data | fromjson %}
+        <div class="result-list">
+            {% for dog_id, data in results.items() %}
+                <div class="result-item">
+                    <span class="dog-name">{{ data.name }}</span>
+                    <span class="confidence">{{ "%.1f"|format(data.confidence) }}%</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-results">未找到识别结果。</p>
+    {% endif %}
+
+    <a href="{{ url_for('main.upload') }}" class="button">上传新视频</a>
+</div>
+{% endblock %}

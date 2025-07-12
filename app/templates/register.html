@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}注册{% endblock %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-form">
+        <div class="auth-header">
+            <h1>注册新用户</h1>
+            <p class="auth-subtitle">创建您的狗狗步态识别账户</p>
+        </div>
+        
+        <form method="POST" class="register-form">
+            {{ form.hidden_tag() }}
+            
+            <div class="form-group">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-input", placeholder="请输入用户名(3-20个字符)") }}
+                <div class="form-validation" id="username-validation">
+                    <div class="validation-item" data-rule="length">
+                        <i class="icon-check"></i> 长度3-20个字符
+                    </div>
+                    <div class="validation-item" data-rule="unique">
+                        <i class="icon-check"></i> 用户名可用
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-input", placeholder="请输入密码") }}
+                <div class="password-strength">
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <span class="strength-text" id="strengthText">密码强度：弱</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                {{ form.password2.label(class="form-label") }}
+                {{ form.password2(class="form-input", placeholder="请再次输入密码") }}
+                <div class="form-validation" id="password-match">
+                    <div class="validation-item" data-rule="match">
+                        <i class="icon-check"></i> 密码匹配
+                    </div>
+                </div>
+            </div>
+            
+            {{ form.submit(class="btn-primary btn-full") }}
+        </form>
+        
+        <div class="auth-footer">
+            <p>已有账户？ <a href="{{ url_for('auth.login') }}">立即登录</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

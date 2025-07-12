@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}首页{% endblock %}
+{% block content %}
+<div class="homepage">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">狗狗步态识别系统</h1>
+            <p class="hero-subtitle">基于AI技术的智能狗狗品种识别平台</p>
+            {% if current_user.is_authenticated %}
+                <div class="hero-actions">
+                    <a href="{{ url_for('main.upload') }}" class="btn-primary btn-large">
+                        <i class="icon-upload"></i> 上传视频识别
+                    </a>
+                    <a href="{{ url_for('main.realtime_detection') }}" class="btn-secondary btn-large">
+                        <i class="icon-camera"></i> 实时检测
+                    </a>
+                </div>
+                <div class="welcome-message">
+                    <p>欢迎回来，{{ current_user.username }}！</p>
+                </div>
+            {% else %}
+                <div class="hero-actions">
+                    <a href="{{ url_for('auth.register') }}" class="btn-primary btn-large">
+                        <i class="icon-user-plus"></i> 立即注册
+                    </a>
+                    <a href="{{ url_for('auth.login') }}" class="btn-secondary btn-large">
+                        <i class="icon-login"></i> 用户登录
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="hero-image">
+            <img src="/static/images/dog-hero.jpg" alt="狗狗识别系统">
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">系统特色</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="icon-ai"></i>
+                    </div>
+                    <h3>AI智能识别</h3>
+                    <p>采用先进的深度学习算法，准确识别狗狗品种和步态特征</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="icon-video"></i>
+                    </div>
+                    <h3>视频分析</h3>
+                    <p>支持多种视频格式，全面分析狗狗的运动状态</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="icon-realtime"></i>
+                    </div>
+                    <h3>实时检测</h3>
+                    <p>支持RTSP实时视频流，即时获取识别结果</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

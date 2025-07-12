@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}登录{% endblock %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-form">
+        <div class="auth-header">
+            <h1>用户登录</h1>
+            <p class="auth-subtitle">登录您的狗狗步态识别账户</p>
+        </div>
+        
+        <form method="POST" class="login-form">
+            {{ form.hidden_tag() }}
+            
+            <div class="form-group">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-input", placeholder="请输入用户名") }}
+                <div class="form-error" id="username-error"></div>
+            </div>
+            
+            <div class="form-group">
+                {{ form.password.label(class="form-label") }}
+                <div class="password-input-wrapper">
+                    {{ form.password(class="form-input", placeholder="请输入密码") }}
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <i class="icon-eye"></i>
+                    </button>
+                </div>
+                <div class="form-error" id="password-error"></div>
+            </div>
+            
+            <div class="form-group checkbox-group">
+                {{ form.remember_me(class="form-checkbox") }}
+                {{ form.remember_me.label(class="checkbox-label") }}
+            </div>
+            
+            {{ form.submit(class="btn-primary btn-full") }}
+        </form>
+        
+        <div class="auth-footer">
+            <p>还没有账户？ <a href="{{ url_for('auth.register') }}">立即注册</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
