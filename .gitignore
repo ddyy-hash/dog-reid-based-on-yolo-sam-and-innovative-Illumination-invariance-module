@@ -29,6 +29,7 @@ fea_data/*
 *.npz
 *.onnx
 *.engine
+!model_assets/*.7z
 
 runs/
 logs/
