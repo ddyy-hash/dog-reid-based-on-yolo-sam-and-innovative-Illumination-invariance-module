@@ -1,5 +1,6 @@
 from segment_anything import sam_model_registry, SamPredictor
 from ultralytics import YOLO
+import os
 import torch
 import cv2
 import numpy as np
@@ -8,7 +9,8 @@ import math
 
 class yolo_seg:
     def __init__(self):
-        # 延迟加载模型
+        self.yolo_model_path = os.environ.get('YOLO_MODEL_PATH', './fea_data/yolov8m-seg.pt')
+        self.sam_checkpoint_path = os.environ.get('SAM_CHECKPOINT_PATH', './fea_data/sam_vit_b_01ec64.pth')
         self.model = None
         self.tracker = None
         self.sam = None
@@ -18,12 +20,11 @@ class yolo_seg:
     def load_models(self):
         """按需加载模型"""
         if self.model is None:
-            self.model = YOLO("./fea_data/yolov8m-seg.pt")
+            self.model = YOLO(self.yolo_model_path)
 
         if self.sam is None:
-            sam_checkpoint = "./fea_data/sam_vit_b_01ec64.pth"
             model_type = "vit_b"
-            self.sam = sam_model_registry[model_type](checkpoint=sam_checkpoint)
+            self.sam = sam_model_registry[model_type](checkpoint=self.sam_checkpoint_path)
             self.sam.to(device="cuda" if torch.cuda.is_available() else "cpu")
             self.sam_predictor = SamPredictor(self.sam)
 

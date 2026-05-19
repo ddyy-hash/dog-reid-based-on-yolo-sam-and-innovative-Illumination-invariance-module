@@ -4,8 +4,7 @@ import time
 from datetime import datetime
 
 import cv2
-from celery import current_app
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session, jsonify, send_from_directory
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session, jsonify, send_from_directory, current_app
 from flask_login import login_user, logout_user, login_required, current_user
 from urllib.parse import urlparse as url_parse
 from app import db
@@ -129,9 +128,6 @@ def upload():
 
 '''
 # routes.py
-from flask import current_app  # 确保正确导入 current_app
-
-
 @main_bp.route('/processing')
 @login_required
 def processing():

@@ -555,7 +555,7 @@ def clear_detection_cache():
     detection_history = []
 
     # 清理临时文件
-    temp_dir = 'temp_frames'
+    temp_dir = os.environ.get('TEMP_FRAME_DIR', 'temp_frames')
     if os.path.exists(temp_dir):
         for file in os.listdir(temp_dir):
             file_path = os.path.join(temp_dir, file)

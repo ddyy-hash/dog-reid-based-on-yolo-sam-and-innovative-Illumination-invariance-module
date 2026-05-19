@@ -43,12 +43,13 @@ def save_uploaded_file(file):
     return None
 
 
-def process_video(filepath, temp_dir='temp_frames'):
+def process_video(filepath, temp_dir=None):
     """处理视频并返回识别结果，同时更新处理统计"""
     import time
     from app.models import ProcessingProgress, Video
     from app import db
 
+    temp_dir = temp_dir or current_app.config['TEMP_FRAME_DIR']
     start_time = time.time()
 
     # 获取视频ID（从filepath推导或传参）

@@ -14,8 +14,9 @@ from torchvision import transforms
 from PIL import Image
 
 
-# 简化版光照不变性模块
 class IlluminationInvariantModule(torch.nn.Module):
+    """Lightweight illumination-invariance module for frame preprocessing."""
+
     def __init__(self):
         super().__init__()
         # 简化网络结构：2层卷积替代原始4层
@@ -32,10 +33,17 @@ class IlluminationInvariantModule(torch.nn.Module):
 
 
 class DogReIDSystem:
-    def __init__(self, model_path='./fea_data/illumination_robust_model.pth'):
+    def __init__(self, model_path=None, features_path=None):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.model_path = model_path
-        self.seger = None  # 延迟加载
+        self.model_path = model_path or os.environ.get(
+            'REID_MODEL_PATH',
+            os.path.join('fea_data', 'illumination_robust_model.pth')
+        )
+        self.features_path = features_path or os.environ.get(
+            'DOG_FEATURES_PATH',
+            os.path.join('fea_data', 'universal_features_h.npy')
+        )
+        self.seger = None
         self.reid_model = None
         self.dog_names = {0: "豆豆", 1: "皮特", 2: "大乖", 3: "多比"}
         self.dog_features = []
@@ -363,15 +371,16 @@ class DogReIDSystem:
         return final_confidence
 
     def load_dog_database(self):
-        """加载狗特征数据库"""
-        features_path = r"C:\Users\dy\Desktop\redog2.0\core\dog_database\features\universal_features_h.npy"
-        if os.path.exists(features_path):
+        """Load dog feature vectors from the configured local feature database."""
+        if os.path.exists(self.features_path):
             try:
-                self.dog_features = np.load(features_path, allow_pickle=True)
+                self.dog_features = np.load(self.features_path, allow_pickle=True)
                 logging.info(f"已加载 {len(self.dog_features)} 条狗特征")
             except Exception as e:
                 logging.error(f"加载狗数据库错误: {e}")
                 self.dog_features = []
+        else:
+            logging.warning("Dog feature database is not available: %s", self.features_path)
         return self.dog_features
 
     def cleanup_temp_frames(self, temp_dir):
